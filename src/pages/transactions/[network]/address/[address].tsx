@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/Table";
+} from "@/components/ui/table";
 import {
   ColumnFiltersState,
   SortingState,
@@ -21,13 +21,13 @@ import {
   getSortedRowModel,
   getFilteredRowModel,
 } from "@tanstack/react-table";
-import { Input } from "@/components/ui/Input";
+import { Input } from "@/components/ui/input";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/Tooltip";
+} from "@/components/ui/tooltip";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import Image from "next/image";
 import Profile from "@/components/Profile";

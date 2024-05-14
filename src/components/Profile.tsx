@@ -2,7 +2,7 @@ import axios from "axios";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { ExternalLink } from "lucide-react";
-import { RaisedButton } from "./ui/Button";
+import { RaisedButton } from "./ui/button";
 
 interface ProfileProps {
   address: string;

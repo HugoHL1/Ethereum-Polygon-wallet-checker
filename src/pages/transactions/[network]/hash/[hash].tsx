@@ -9,8 +9,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { ArrowLeft, CheckCircle, ExternalLink, XCircle } from "lucide-react";
 import { useRouter } from "next/router";
 
