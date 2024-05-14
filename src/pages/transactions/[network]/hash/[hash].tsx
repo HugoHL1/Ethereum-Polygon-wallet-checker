@@ -80,8 +80,8 @@ export default TransactionDetails;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { network, hash } = context.params as { network: string; hash: string };
-  let apiKey = process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY; // Default to Ethereum API key
-  let baseUrl = "https://api.etherscan.io"; // Default to Ethereum base URL
+  let apiKey = process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY;
+  let baseUrl = "https://api.etherscan.io";
 
   if (network === "polygon") {
     apiKey = process.env.NEXT_PUBLIC_POLYGONSCAN_API_KEY;

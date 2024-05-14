@@ -28,6 +28,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
+import Image from "next/image";
+import Profile from "@/components/Profile";
 
 interface Transaction {
   hash: string;
@@ -48,9 +51,12 @@ function formatAddress(address: string) {
   )}`;
 }
 
-function formatEth(wei: number) {
-  const eth = wei / 1e18;
-  return eth.toFixed(7);
+function formatCurrency(wei: number, network: string) {
+  const divisor = 1e18; // Both ETH and MATIC use a similar scale factor
+  const amount = wei / divisor;
+  return network === "ethereum"
+    ? `${amount.toFixed(7)} ETH`
+    : `${amount.toFixed(7)} MATIC`;
 }
 
 const Transactions = ({ transactions, network }: TransactionsProps) => {
@@ -103,7 +109,6 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
       console.error("Current address is undefined.");
     }
   };
-  
 
   const columns = [
     {
@@ -112,15 +117,22 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
       cell: (info) => (
         <Link
           href={`/transactions/${currentNetwork}/hash/${info.row.original.hash}`}
+          className="ml-2 text-blue-500 hover:text-blue-700 transition-colors"
         >
           {formatAddress(info.getValue())}
         </Link>
       ),
+      enableSorting: false, // Disable sorting for this column
     },
     {
       accessorKey: "value",
-      header: () => "Value (ETH)",
-      cell: (info) => `${formatEth(info.getValue())} ETH`,
+      header: () => "Value",
+      cell: (info) => (
+        <div className="text-neutral-700">
+          {formatCurrency(info.getValue(), currentNetwork)}
+        </div>
+      ),
+      enableSorting: true,
     },
     {
       accessorKey: "from",
@@ -137,6 +149,7 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
           </Tooltip>
         </TooltipProvider>
       ),
+      enableSorting: false, // Disable sorting for this column
     },
     {
       accessorKey: "to",
@@ -153,6 +166,7 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
           </Tooltip>
         </TooltipProvider>
       ),
+      enableSorting: false,
     },
     {
       accessorKey: "timeStamp",
@@ -166,6 +180,7 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
           minute: "2-digit",
           second: "2-digit",
         }),
+      enableSorting: true,
     },
     {
       accessorKey: "action",
@@ -173,16 +188,19 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
       cell: (info) => (
         <Link
           href={`/transactions/${currentNetwork}/hash/${info.row.original.hash}`}
-          className="ml-2 text-blue-500 hover:text-blue-700"
+          className="ml-2 text-blue-500 hover:text-blue-700 transition-colors"
         >
           View Details
         </Link>
       ),
+      enableSorting: false,
     },
   ];
 
   const [data, setData] = useState(() => transactions);
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: "timeStamp", desc: true },
+  ]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
@@ -216,16 +234,23 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id}>
-                    <div onClick={header.column.getToggleSortingHandler()}>
+                    <div
+                      className="flex gap-2 items-center cursor-pointer"
+                      onClick={header.column.getToggleSortingHandler()}
+                    >
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext()
                       )}
-                      {header.column.getIsSorted()
-                        ? header.column.getIsSorted() === "desc"
-                          ? " 🔽"
-                          : " 🔼"
-                        : ""}
+                      {header.column.getIsSorted() ? (
+                        header.column.getIsSorted() === "desc" ? (
+                          <ArrowDown className="w-4 h-4" />
+                        ) : (
+                          <ArrowUp className="w-4 h-4" />
+                        )
+                      ) : header.id === "value" || header.id === "timeStamp" ? (
+                        <ArrowUpDown className="w-4 h-4" />
+                      ) : null}
                     </div>
                   </TableHead>
                 ))}
@@ -249,14 +274,33 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
   }
 
   return (
-    <Tabs defaultValue={currentNetwork} onValueChange={handleNetworkChange}>
-      <TabsList>
-        <TabsTrigger value="ethereum">Ethereum</TabsTrigger>
-        <TabsTrigger value="polygon">Polygon</TabsTrigger>
-      </TabsList>
-      <TabsContent value="ethereum">{renderTable(transactions)}</TabsContent>
-      <TabsContent value="polygon">{renderTable(transactions)}</TabsContent>
-    </Tabs>
+    <main>
+      <Profile address={currentAddress} network={currentNetwork} />
+      <Tabs defaultValue={currentNetwork} onValueChange={handleNetworkChange}>
+        <TabsList>
+          <TabsTrigger className="flex items-center gap-2" value="ethereum">
+            Ethereum
+            <Image
+              width={15}
+              height={15}
+              alt="Ethereum logo"
+              src="/images/eth.svg"
+            />
+          </TabsTrigger>
+          <TabsTrigger className="flex items-center gap-2" value="polygon">
+            Polygon
+            <Image
+              width={15}
+              height={15}
+              alt="Polygon logo"
+              src="/images/matic.png"
+            />
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent className="bg-white" value="ethereum">{renderTable(transactions)}</TabsContent>
+        <TabsContent className="bg-white shadow-lg shadow-white" value="polygon">{renderTable(transactions)}</TabsContent>
+      </Tabs>
+    </main>
   );
 };
 

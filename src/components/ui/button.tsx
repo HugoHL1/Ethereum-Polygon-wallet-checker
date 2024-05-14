@@ -33,6 +33,16 @@ const buttonVariants = cva(
   }
 )
 
+interface RaisedButtonProps {
+  children: React.ReactNode;
+}
+
+const RaisedButton: React.FC<RaisedButtonProps> = ({ children }) => (
+  <button className="h-fit flex items-center gap-2 cursor-pointer rounded-lg border-2 border-black bg-white px-8 py-4 font-medium text-black transition-all duration-500 hover:translate-x-[-2px] hover:translate-y-[0px] hover:rounded-lg hover:shadow-[10px_10px_0px_black] active:translate-x-[0px] active:translate-y-[6px] active:rounded-lg active:shadow-none">
+    {children}
+  </button>
+);
+
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
@@ -53,4 +63,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 )
 Button.displayName = "Button"
 
-export { Button, buttonVariants }
+export { Button, RaisedButton, buttonVariants }
