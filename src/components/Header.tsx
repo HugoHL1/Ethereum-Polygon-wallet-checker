@@ -23,11 +23,19 @@ const Header: React.FC = () => {
       </div>
       <Link
         href="https://github.com/HugoHL1/front-end-test"
-        className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+        className="hidden md:inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
         target="_blank"
         rel="noopener noreferrer"
       >
         GitHub <Github className="w-4 h-4 ml-2" />
+      </Link>
+      <Link
+        href="https://github.com/HugoHL1/front-end-test"
+        className="md:hidden items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+          <Github className="w-5 h-5 my-auto" />
       </Link>
     </header>
   );

@@ -275,8 +275,8 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
     <main>
       <Profile address={currentAddress} network={currentNetwork} />
       <Tabs defaultValue={currentNetwork} onValueChange={handleNetworkChange}>
-        <TabsList>
-          <TabsTrigger className="flex items-center gap-2" value="ethereum">
+        <TabsList className="w-full md:w-fit">
+          <TabsTrigger className="flex items-center gap-2 w-full md:w-fit" value="ethereum">
             Ethereum
             <Image
               width={15}
@@ -285,7 +285,7 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
               src="/images/eth.svg"
             />
           </TabsTrigger>
-          <TabsTrigger className="flex items-center gap-2" value="polygon">
+          <TabsTrigger className="flex items-center gap-2 w-full md:w-fit" value="polygon">
             Polygon
             <Image
               width={15}

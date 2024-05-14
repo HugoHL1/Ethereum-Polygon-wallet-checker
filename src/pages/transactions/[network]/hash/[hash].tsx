@@ -121,7 +121,7 @@ const TransactionDetails = ({
             {parseInt(transaction.effectiveGasPrice, 16)} wei
           </p>
         </CardContent>
-        <CardFooter className="flex justify-between">
+        <CardFooter className="flex flex-col-reverse gap-4 md:flex-row justify-between">
           <Button variant="ghost" onClick={() => router.back()}>
             <ArrowLeft className="w-4 h-4 mr-1" /> Go back to account
           </Button>

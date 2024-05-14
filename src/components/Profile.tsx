@@ -54,7 +54,7 @@ const Profile: React.FC<ProfileProps> = ({ address, network }) => {
       : `https://polygonscan.com/address/${address}`;
 
   return (
-    <div className="flex justify-between gap-8 py-6 px-8 mb-8 bg-gradient-to-r from-blue-200 to-purple-300 border rounded-xl shadow-sm font-mono">
+    <div className="flex md:flex-row flex-col justify-between gap-8 py-6 px-8 mb-8 bg-gradient-to-r from-blue-200 to-purple-300 border rounded-xl shadow-sm font-mono">
       <div className="flex flex-col truncate">
         <p className="text-xs opacity-85">Your account</p>
         <h2 className="text-4xl text-neutral-800 truncate">{address}</h2>

@@ -36,13 +36,13 @@ export default function Home() {
   return (
     <main className="flex flex-col items-center justify-center">
       <div className="text-center mt-16 mb-8">
-        <h1 className="text-6xl font-bold mb-4">Welcome to Crypto Explorer</h1>
+        <h1 className="text-4xl md:text-6xl font-bold mb-4">Welcome to Crypto Explorer</h1>
         <h3 className="text-xl">
           Enter your Ethereum or Polygon address to get started
         </h3>
       </div>
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
-        <div className="mb-4 flex gap-2">
+        <div className="mb-4 flex md:flex-row flex-col gap-2">
           <Input
             type="text"
             placeholder="Enter Ethereum or Polygon address"
@@ -57,7 +57,7 @@ export default function Home() {
             onValueChange={(value) => setNetwork(value)}
             defaultValue="ethereum"
           >
-            <SelectTrigger className="w-52">
+            <SelectTrigger className="md:w-52 w-full">
               <SelectValue placeholder="ethereum" />
             </SelectTrigger>
             <SelectContent>
