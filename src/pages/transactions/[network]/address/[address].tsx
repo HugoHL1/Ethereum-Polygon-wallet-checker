@@ -312,10 +312,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let apiKey = "";
 
   if (network === "ethereum") {
-    apiKey = process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY;
+    apiKey = process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY || "";
     apiUrl = `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&sort=asc&apikey=${apiKey}`;
   } else if (network === "polygon") {
-    apiKey = process.env.NEXT_PUBLIC_POLYGONSCAN_API_KEY;
+    apiKey = process.env.NEXT_PUBLIC_POLYGONSCAN_API_KEY || "";
     apiUrl = `https://api.polygonscan.com/api?module=account&action=txlist&address=${address}&sort=asc&apikey=${apiKey}`;
   } else {
     return { notFound: true };
@@ -338,5 +338,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   };
 };
+
 
 export default Transactions;

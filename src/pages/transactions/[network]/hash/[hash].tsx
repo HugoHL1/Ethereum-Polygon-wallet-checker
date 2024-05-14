@@ -34,14 +34,13 @@ const TransactionDetails = ({
   network,
 }: TransactionDetailProps) => {
   const router = useRouter();
-  if (!transaction) {
-    return (
-      <div>Transaction details not available or transaction not found.</div>
-    );
-  }
 
   const weiToEther = (wei: string) => {
     return parseInt(wei, 16) / 1e18;
+  };
+
+  const calculateTransactionFee = (gasUsed: string, gasPrice: string) => {
+    return parseInt(gasUsed, 16) * parseInt(gasPrice, 16) / 1e18;
   };
 
   const currencyLabel = network === "polygon" ? "MATIC" : "Ether";
@@ -49,11 +48,20 @@ const TransactionDetails = ({
   const [formattedDate, setFormattedDate] = useState("");
 
   useEffect(() => {
-    const date = new Date(parseInt(transaction.timeStamp || "0", 16) * 1000);
-    setFormattedDate(date.toLocaleString("uk-UK"));
-  }, [transaction.timeStamp]);
+    if (transaction?.timeStamp) {
+      const date = new Date(parseInt(transaction.timeStamp, 16) * 1000);
+      setFormattedDate(date.toLocaleString("uk-UK"));
+    }
+  }, [transaction?.timeStamp]);
+
+  if (!transaction) {
+    return (
+      <div>Transaction details not available or transaction not found.</div>
+    );
+  }
 
   const statusSuccessful = transaction.status === "0x1";
+  const transactionFee = calculateTransactionFee(transaction.gasUsed, transaction.effectiveGasPrice);
 
   const explorerBaseUrl =
     network === "polygon" ? "https://polygonscan.com" : "https://etherscan.io";
@@ -120,6 +128,9 @@ const TransactionDetails = ({
             <strong>Effective Gas Price:</strong>{" "}
             {parseInt(transaction.effectiveGasPrice, 16)} wei
           </p>
+          <p>
+            <strong>Transaction Fee:</strong> {transactionFee.toFixed(7)} {currencyLabel}
+          </p>
         </CardContent>
         <CardFooter className="flex flex-col-reverse gap-4 md:flex-row justify-between">
           <Button variant="ghost" onClick={() => router.back()}>
@@ -145,11 +156,11 @@ export default TransactionDetails;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { network, hash } = context.params as { network: string; hash: string };
-  let apiKey = process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY;
+  let apiKey = process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY || "";
   let baseUrl = "https://api.etherscan.io";
 
   if (network === "polygon") {
-    apiKey = process.env.NEXT_PUBLIC_POLYGONSCAN_API_KEY;
+    apiKey = process.env.NEXT_PUBLIC_POLYGONSCAN_API_KEY || "";
     baseUrl = "https://api.polygonscan.com";
   }
 
