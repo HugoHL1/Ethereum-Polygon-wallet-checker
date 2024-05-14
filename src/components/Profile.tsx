@@ -48,6 +48,11 @@ const Profile: React.FC<ProfileProps> = ({ address, network }) => {
     loadBalances();
   }, [address, network]); // Ajout de network dans les dépendances de useEffect
 
+  const explorerUrl =
+    network === "ethereum"
+      ? `https://etherscan.io/address/${address}`
+      : `https://polygonscan.com/address/${address}`;
+
   return (
     <div className="flex justify-between gap-8 py-6 px-8 mb-8 bg-gradient-to-r from-blue-200 to-purple-300 border rounded-xl shadow-sm font-mono">
       <div className="flex flex-col truncate">
@@ -77,19 +82,13 @@ const Profile: React.FC<ProfileProps> = ({ address, network }) => {
         )}
       </div>
       <div className="my-auto whitespace-nowrap">
-        <RaisedButton>
-          {network === "polygon" && (
-            <div>
-              View on Polygonscan
-            </div>
-          )}
-          {network === "ethereum" && (
-            <div>
-              View on Etherscan
-            </div>
-          )}
-          <ExternalLink className="w-4 h-4" />
-        </RaisedButton>
+        <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
+          <RaisedButton>
+            {network === "polygon" && <div>View on Polygonscan</div>}
+            {network === "ethereum" && <div>View on Etherscan</div>}
+            <ExternalLink className="w-4 h-4 ml-2" />
+          </RaisedButton>
+        </a>
       </div>
     </div>
   );

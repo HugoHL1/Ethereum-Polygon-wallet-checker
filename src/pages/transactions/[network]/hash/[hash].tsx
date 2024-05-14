@@ -1,6 +1,18 @@
 import axios from "axios";
 import { GetServerSideProps } from "next";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, CheckCircle, ExternalLink, XCircle } from "lucide-react"; // Import icons from Lucide React
+import { useRouter } from "next/router";
 
 interface TransactionDetailProps {
   transaction: {
@@ -21,13 +33,14 @@ const TransactionDetails = ({
   transaction,
   network,
 }: TransactionDetailProps) => {
+  const router = useRouter();
   if (!transaction) {
     return (
       <div>Transaction details not available or transaction not found.</div>
     );
   }
 
-  const weiToEther = (wei) => {
+  const weiToEther = (wei: string) => {
     return parseInt(wei, 16) / 1e18;
   };
 
@@ -40,38 +53,90 @@ const TransactionDetails = ({
     setFormattedDate(date.toLocaleString("uk-UK"));
   }, [transaction.timeStamp]);
 
+  const statusSuccessful = transaction.status === "0x1";
+
+  const explorerBaseUrl =
+    network === "polygon" ? "https://polygonscan.com" : "https://etherscan.io";
+  const explorerUrl = `${explorerBaseUrl}/tx/${transaction.transactionHash}`;
+
   return (
-    <div>
-      <h1>Transaction Details</h1>
-      <p>
-        <strong>Transaction Hash:</strong> {transaction.transactionHash}
-      </p>
-      <p>
-        <strong>From:</strong> {transaction.from}
-      </p>
-      <p>
-        <strong>To:</strong> {transaction.to}
-      </p>
-      <p>
-        <strong>Value:</strong> {weiToEther(transaction.value)} {currencyLabel}
-      </p>
-      <p>
-        <strong>Timestamp:</strong> {formattedDate}
-      </p>
-      <p>
-        <strong>Block Number:</strong> {parseInt(transaction.blockNumber, 16)}
-      </p>
-      <p>
-        <strong>Gas Used:</strong> {parseInt(transaction.gasUsed, 16)}
-      </p>
-      <p>
-        <strong>Effective Gas Price:</strong>{" "}
-        {parseInt(transaction.effectiveGasPrice, 16)} wei
-      </p>
-      <p>
-        <strong>Transaction Receipt Status:</strong>{" "}
-        {transaction.status === "0x1" ? "Successful" : "Failed"}
-      </p>
+    <div className="flex justify-center">
+      <Card className="w-full max-w-3xl">
+        <CardHeader>
+          <CardTitle>Transaction Details</CardTitle>
+          <CardDescription>This is your transaction details</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="items-center">
+            <strong>Status:</strong>
+            <span
+              className={statusSuccessful ? "text-green-500" : "text-red-500"}
+            >
+              {statusSuccessful ? (
+                <>
+                  <CheckCircle className="inline-block w-4 h-4 mx-1" />{" "}
+                  Successful
+                </>
+              ) : (
+                <>
+                  <XCircle className="inline-block w-4 h-4 mx-1" /> Failed
+                </>
+              )}
+            </span>
+          </p>
+          <p className="truncate overflow-hidden text-ellipsis">
+            <strong>Transaction Hash:</strong>{" "}
+            <Link
+              href={explorerUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              passHref
+              className="text-blue-500 hover:text-blue-700 transition-colors"
+            >
+              {transaction.transactionHash}
+            </Link>
+          </p>
+          <div className="border-t pb-2 pt-1 mt-2 truncate overflow-hidden text-ellipsis">
+            <strong>From:</strong> {transaction.from}
+          </div>
+          <div className="border-b pb-1 mb-2 truncate overflow-hidden text-ellipsis">
+            <strong>To:</strong> {transaction.to}
+          </div>
+          <p>
+            <strong>Value:</strong> {weiToEther(transaction.value)}{" "}
+            {currencyLabel}
+          </p>
+          <p>
+            <strong>Date:</strong> {formattedDate}
+          </p>
+          <p>
+            <strong>Block Number:</strong>{" "}
+            {parseInt(transaction.blockNumber, 16)}
+          </p>
+          <p>
+            <strong>Gas Used:</strong> {parseInt(transaction.gasUsed, 16)}
+          </p>
+          <p>
+            <strong>Effective Gas Price:</strong>{" "}
+            {parseInt(transaction.effectiveGasPrice, 16)} wei
+          </p>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Button variant="ghost" onClick={() => router.back()}>
+            <ArrowLeft className="w-4 h-4 mr-1" /> Go back to account
+          </Button>
+          <Link
+            href={explorerUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            passHref
+          >
+            <Button variant="outline">
+              See on block explorer <ExternalLink className="w-4 h-4 ml-2" />
+            </Button>
+          </Link>
+        </CardFooter>
+      </Card>
     </div>
   );
 };
@@ -119,5 +184,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   } catch (error) {
     console.error("API call failed:", error);
+    return {
+      props: {
+        transaction: null,
+        network,
+      },
+    };
   }
 };
