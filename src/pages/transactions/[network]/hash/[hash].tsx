@@ -9,9 +9,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle, ExternalLink, XCircle } from "lucide-react"; // Import icons from Lucide React
+} from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { ArrowLeft, CheckCircle, ExternalLink, XCircle } from "lucide-react";
 import { useRouter } from "next/router";
 
 interface TransactionDetailProps {
@@ -26,7 +26,7 @@ interface TransactionDetailProps {
     value: string;
     timeStamp?: string;
   };
-  network: string; // Add network to props
+  network: string;
 }
 
 const TransactionDetails = ({
@@ -44,7 +44,7 @@ const TransactionDetails = ({
     return parseInt(wei, 16) / 1e18;
   };
 
-  const currencyLabel = network === "polygon" ? "MATIC" : "Ether"; // Determine the currency label based on network
+  const currencyLabel = network === "polygon" ? "MATIC" : "Ether";
 
   const [formattedDate, setFormattedDate] = useState("");
 

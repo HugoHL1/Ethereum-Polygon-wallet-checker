@@ -1,8 +1,8 @@
 import axios from "axios";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { RaisedButton } from "./ui/button";
 import { ExternalLink } from "lucide-react";
+import { RaisedButton } from "./ui/Button";
 
 interface ProfileProps {
   address: string;
@@ -46,7 +46,7 @@ const Profile: React.FC<ProfileProps> = ({ address, network }) => {
     };
 
     loadBalances();
-  }, [address, network]); // Ajout de network dans les dépendances de useEffect
+  }, [address, network]);
 
   const explorerUrl =
     network === "ethereum"

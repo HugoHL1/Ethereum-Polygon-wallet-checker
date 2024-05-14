@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/Input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/Select";
+import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
@@ -18,12 +18,19 @@ import Image from "next/image";
 export default function Home() {
   const [address, setAddress] = useState("");
   const [network, setNetwork] = useState("ethereum");
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = () => {
-    if (address && network) {
+    if (validateAddress(address)) {
       router.push(`/transactions/${network}/address/${address}`);
+    } else {
+      setError("Please enter a valid Ethereum or Polygon address.");
     }
+  };
+
+  const validateAddress = (validaddress:string) => {
+    return validaddress.startsWith("0x") && validaddress.length === 42;
   };
 
   return (
@@ -40,7 +47,10 @@ export default function Home() {
             type="text"
             placeholder="Enter Ethereum or Polygon address"
             value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            onChange={(e) => {
+              setAddress(e.target.value);
+              setError("");
+            }}
             className="w-full"
           />
           <Select
@@ -77,9 +87,12 @@ export default function Home() {
             </SelectContent>
           </Select>
         </div>
+        {error && (
+          <p className="text-red-500 text-center mb-4">{error}</p>
+        )}
         <Button
           onClick={handleSubmit}
-          className="w-full bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+          className="w-full"
         >
           View Transactions
         </Button>

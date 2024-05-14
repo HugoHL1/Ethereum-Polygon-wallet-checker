@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/Table";
 import {
   ColumnFiltersState,
   SortingState,
@@ -21,13 +21,13 @@ import {
   getSortedRowModel,
   getFilteredRowModel,
 } from "@tanstack/react-table";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/Input";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ui/Tooltip";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import Image from "next/image";
 import Profile from "@/components/Profile";
@@ -45,15 +45,13 @@ interface TransactionsProps {
   network: string;
 }
 
-function formatAddress(address: string) {
-  return `${address.substring(0, 10)}...${address.substring(
-    address.length - 10
-  )}`;
+function formatAddress(address: string): string {
+  return `${address.substring(0, 10)}...${address.substring(address.length - 10)}`;
 }
 
-function formatCurrency(wei: number, network: string) {
-  const divisor = 1e18; // Both ETH and MATIC use a similar scale factor
-  const amount = wei / divisor;
+function formatCurrency(wei: string, network: string): string {
+  const divisor = 1e18;
+  const amount = parseFloat(wei) / divisor;
   return network === "ethereum"
     ? `${amount.toFixed(7)} ETH`
     : `${amount.toFixed(7)} MATIC`;
@@ -61,7 +59,7 @@ function formatCurrency(wei: number, network: string) {
 
 const Transactions = ({ transactions, network }: TransactionsProps) => {
   const router = useRouter();
-  const [currentNetwork, setCurrentNetwork] = useState(network);
+  const [currentNetwork, setCurrentNetwork] = useState<string>(network);
   const [currentAddress, setCurrentAddress] = useState<string>(
     (router.query.address as string) || ""
   );
@@ -73,8 +71,8 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
 
   useEffect(() => {
     async function loadTransactions() {
-      let apiUrl;
-      let apiKey =
+      let apiUrl: string;
+      const apiKey: string | undefined =
         currentNetwork === "ethereum"
           ? process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY
           : process.env.NEXT_PUBLIC_POLYGONSCAN_API_KEY;
@@ -114,22 +112,22 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
     {
       accessorKey: "hash",
       header: () => "Transaction Hash",
-      cell: (info) => (
+      cell: (info: any) => (
         <Link
           href={`/transactions/${currentNetwork}/hash/${info.row.original.hash}`}
           className="ml-2 text-blue-500 hover:text-blue-700 transition-colors"
         >
-          {formatAddress(info.getValue())}
+          {formatAddress(info.getValue() as string)}
         </Link>
       ),
-      enableSorting: false, // Disable sorting for this column
+      enableSorting: false,
     },
     {
       accessorKey: "value",
       header: () => "Value",
-      cell: (info) => (
+      cell: (info: any) => (
         <div className="text-neutral-700">
-          {formatCurrency(info.getValue(), currentNetwork)}
+          {formatCurrency(info.getValue() as string, currentNetwork)}
         </div>
       ),
       enableSorting: true,
@@ -137,11 +135,11 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
     {
       accessorKey: "from",
       header: () => "From Address",
-      cell: (info) => (
+      cell: (info: any) => (
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <span>{formatAddress(info.getValue())}</span>
+              <span>{formatAddress(info.getValue() as string)}</span>
             </TooltipTrigger>
             <TooltipContent>
               <p>{info.getValue()}</p>
@@ -149,16 +147,16 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
           </Tooltip>
         </TooltipProvider>
       ),
-      enableSorting: false, // Disable sorting for this column
+      enableSorting: false,
     },
     {
       accessorKey: "to",
       header: () => "To Address",
-      cell: (info) => (
+      cell: (info: any) => (
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <span>{formatAddress(info.getValue())}</span>
+              <span>{formatAddress(info.getValue() as string)}</span>
             </TooltipTrigger>
             <TooltipContent>
               <p>{info.getValue()}</p>
@@ -171,8 +169,8 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
     {
       accessorKey: "timeStamp",
       header: () => "Date",
-      cell: (info) =>
-        new Date(parseInt(info.getValue()) * 1000).toLocaleString("uk-UK", {
+      cell: (info: any) =>
+        new Date(parseInt(info.getValue() as string) * 1000).toLocaleString("uk-UK", {
           year: "numeric",
           month: "2-digit",
           day: "2-digit",
@@ -185,7 +183,7 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
     {
       accessorKey: "action",
       header: () => "Action",
-      cell: (info) => (
+      cell: (info: any) => (
         <Link
           href={`/transactions/${currentNetwork}/hash/${info.row.original.hash}`}
           className="ml-2 text-blue-500 hover:text-blue-700 transition-colors"
@@ -197,7 +195,7 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
     },
   ];
 
-  const [data, setData] = useState(() => transactions);
+  const [data, setData] = useState<Transaction[]>(() => transactions);
   const [sorting, setSorting] = useState<SortingState>([
     { id: "timeStamp", desc: true },
   ]);
@@ -217,14 +215,14 @@ const Transactions = ({ transactions, network }: TransactionsProps) => {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  function renderTable(transactions) {
+  function renderTable(transactions: Transaction[]) {
     return (
       <>
         <Input
           placeholder="Search transaction hash..."
-          value={(table.getColumn("hash").getFilterValue() as string) ?? ""}
+          value={(table.getColumn("hash")?.getFilterValue() as string) ?? ""}
           onChange={(e) =>
-            table.getColumn("hash").setFilterValue(e.target.value)
+            table.getColumn("hash")?.setFilterValue(e.target.value)
           }
           className="mb-4 max-w-[400px]"
         />
